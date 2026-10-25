@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NEON — پلتفرم ویدئویی</title>
+<style>
+:root{
+ --bg:#050507;--panel:#0c0b12;--panel2:#12101a;--line:#26202f;
+ --purple:#9b5cff;--purple2:#c05cff;--text:#f7f5fb;--muted:#a7a2b5;
+ --danger:#ff5577;--shadow:0 20px 70px rgba(0,0,0,.45)
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:radial-gradient(circle at 75% -10%,rgba(155,92,255,.18),transparent 32%),var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100%;overflow-x:hidden}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.app{min-height:100vh}
+.topbar{height:76px;position:sticky;top:0;z-index:50;background:rgba(5,5,7,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:18px;padding:0 28px}
+.logo{display:flex;align-items:center;gap:10px;font-size:23px;font-weight:900;letter-spacing:2px;white-space:nowrap}
+.logoMark{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--purple),#5d2bff);box-shadow:0 0 28px rgba(155,92,255,.55);display:grid;place-items:center}
+.logoMark svg{width:18px}
+.search{flex:1;max-width:650px;margin:auto;position:relative}
+.search input{width:100%;height:46px;border:1px solid var(--line);outline:0;border-radius:15px;background:#0b0a10;color:var(--text);padding:0 46px 0 16px;transition:.2s}
+.search input:focus{border-color:rgba(155,92,255,.7);box-shadow:0 0 0 4px rgba(155,92,255,.08)}
+.search svg{position:absolute;right:15px;top:14px;width:18px;color:var(--muted)}
+.topActions{display:flex;gap:9px}
+.iconBtn,.primary,.ghost{border:1px solid var(--line);background:var(--panel);color:var(--text);height:42px;border-radius:13px;padding:0 15px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.iconBtn{width:42px;padding:0}
+.iconBtn:hover,.ghost:hover{border-color:rgba(155,92,255,.65);background:#15111e}
+.primary{border:0;background:linear-gradient(135deg,#8d4fff,#b24dff);box-shadow:0 10px 30px rgba(140,70,255,.25);font-weight:700}
+.primary:hover{filter:brightness(1.1)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1700px;margin:auto}
+.sidebar{padding:24px 15px;position:sticky;top:76px;height:calc(100vh - 76px);border-left:1px solid rgba(255,255,255,.04)}
+.navTitle{font-size:11px;color:#6f697a;margin:15px 12px 9px}
+.navBtn{width:100%;display:flex;align-items:center;gap:12px;border:0;background:transparent;color:var(--muted);padding:12px;border-radius:12px;margin:3px 0;text-align:right}
+.navBtn:hover,.navBtn.active{color:white;background:linear-gradient(90deg,rgba(155,92,255,.16),transparent);box-shadow:inset 2px 0 0 var(--purple)}
+.navBtn svg{width:19px;flex:none}
+.content{padding:28px;min-width:0}
+.hero{min-height:260px;border:1px solid var(--line);border-radius:28px;padding:38px;position:relative;overflow:hidden;background:linear-gradient(125deg,rgba(155,92,255,.17),rgba(16,12,24,.8) 45%,rgba(7,7,10,.95));box-shadow:var(--shadow)}
+.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);pointer-events:none}
+.hero:before{width:350px;height:350px;background:rgba(164,75,255,.15);left:-100px;bottom:-180px}
+.hero:after{width:250px;height:250px;background:rgba(80,55,255,.12);right:-70px;top:-130px}
+.heroContent{position:relative;z-index:1;max-width:720px}
+.eyebrow{color:#c4a8ff;font-size:13px;font-weight:700;margin-bottom:13px}
+.hero h1{font-size:clamp(30px,5vw,56px);margin:0 0 13px;line-height:1.15}
+.hero p{color:#b9b3c5;line-height:1.9;margin:0 0 25px;max-width:600px}
+.sectionHead{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:32px 0 15px}
+.sectionHead h2{font-size:20px;margin:0}
+.count{color:var(--muted);font-size:13px}
+.chips{display:flex;gap:8px;overflow:auto;padding-bottom:3px;scrollbar-width:none}
+.chip{border:1px solid var(--line);background:#0a0910;color:#aaa4b6;border-radius:999px;padding:9px 15px;white-space:nowrap}
+.chip.active,.chip:hover{color:white;border-color:rgba(155,92,255,.55);background:rgba(155,92,255,.12)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.card{background:linear-gradient(180deg,#100e16,#0a0910);border:1px solid var(--line);border-radius:19px;overflow:hidden;transition:.22s;min-width:0;cursor:pointer}
+.card:hover{transform:translateY(-4px);border-color:rgba(155,92,255,.55);box-shadow:0 18px 45px rgba(0,0,0,.38),0 0 28px rgba(155,92,255,.08)}
+.thumb{aspect-ratio:16/9;background:#111;position:relative;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .play{position:absolute;inset:0;margin:auto;width:52px;height:52px;border:1px solid rgba(255,255,255,.2);border-radius:50%;display:grid;place-items:center;background:rgba(5,5,7,.6);backdrop-filter:blur(8px);opacity:0;transform:scale(.9);transition:.2s;color:#fff;font-size:18px}
+.card:hover .play{opacity:1;transform:scale(1)}
+.duration{position:absolute;bottom:9px;left:9px;background:rgba(0,0,0,.75);padding:4px 7px;border-radius:6px;font-size:11px}
+.cardBody{padding:13px}
+.cardTitle{font-weight:800;line-height:1.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.caption{font-size:12px;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{display:flex;justify-content:space-between;gap:8px;color:#777182;font-size:11px;margin-top:12px}
+.empty{border:1px dashed #332a40;border-radius:22px;padding:55px 20px;text-align:center;background:rgba(15,12,20,.5)}
+.emptyIcon{width:60px;height:60px;margin:auto auto 15px;border-radius:18px;display:grid;place-items:center;background:rgba(155,92,255,.1);color:#bd91ff}
+.empty h3{margin:0 0 8px}.empty p{color:var(--muted);margin:0 0 18px;font-size:13px}
+.mobileNav{display:none}
+.modalBack{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+.modalBack.open{display:flex}
+.modal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#0b0a10;border:1px solid #30283b;border-radius:23px;box-shadow:var(--shadow);padding:23px}
+.modalHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modalHead h3{margin:0}
+.close{background:transparent;border:0;color:#aaa;width:38px;height:38px;border-radius:10px}
+.close:hover{background:#191520;color:#fff}
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;color:#a8a1b3}
+.field input,.field textarea,.field select{background:#08070c;border:1px solid #292331;color:#fff;border-radius:12px;outline:0;padding:11px 12px}
+.field textarea{min-height:90px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(155,92,255,.65)}
+.modalFoot{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+.toast{position:fixed;left:22px;bottom:22px;z-index:200;background:#111019;border:1px solid #3a2b4d;border-radius:13px;padding:12px 16px;box-shadow:var(--shadow);transform:translateY(30px);opacity:0;pointer-events:none;transition:.25s}
+.toast.show{transform:none;opacity:1}
+.videoPage{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px}
+.playerWrap{background:#000;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.playerWrap video{width:100%;display:block;max-height:70vh;background:#000}
+.videoInfo{padding:18px 3px}.videoInfo h1{margin:0 0 9px;font-size:25px}.videoInfo p{color:var(--muted);line-height:1.9;margin:0}
+.sideInfo{border:1px solid var(--line);border-radius:20px;background:#0b0a10;padding:18px;height:max-content}
+.sideInfo h3{margin-top:0}.sideInfo .row{padding:12px 0;border-bottom:1px solid #1d1923;color:var(--muted);font-size:13px}.sideInfo .row:last-child{border:0}
+.manageList{display:flex;flex-direction:column;gap:9px}
+.manageItem{border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:12px;background:#0b0a10}
+.manageItem img{width:105px;height:60px;object-fit:cover;border-radius:9px}.manageMain{flex:1;min-width:0}.manageMain b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.manageMain small{color:var(--muted)}
+.actions{display:flex;gap:6px}.actions button{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#12101a;color:#ccc}
+.jsonBox{width:100%;min-height:330px;background:#07060a;border:1px solid #292331;color:#d9c8ff;border-radius:14px;padding:15px;direction:ltr;text-align:left;font:13px/1.6 monospace;resize:vertical}
+.statGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.stat{border:1px solid var(--line);border-radius:16px;background:#0c0b12;padding:18px}.stat strong{font-size:25px;display:block}.stat span{color:var(--muted);font-size:12px}
+@media(max-width:1200px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.layout{display:block}.sidebar{display:none}.content{padding:20px 15px 92px}.topbar{padding:0 14px;height:68px}.topActions .label{display:none}.topActions .iconBtn{width:40px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.hero{padding:28px;min-height:230px}.videoPage{grid-template-columns:1fr}.mobileNav{position:fixed;display:flex;bottom:0;right:0;left:0;height:70px;background:rgba(8,7,11,.93);backdrop-filter:blur(18px);border-top:1px solid #292331;z-index:60;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom)}.mobileNav button{border:0;background:none;color:#858090;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px}.mobileNav button.active{color:#c096ff}.mobileNav svg{width:20px}.search{max-width:none}.logo{font-size:19px}.formGrid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+@media(max-width:560px){.topbar{gap:9px}.logo span{display:none}.search input{height:42px}.grid{grid-template-columns:1fr}.hero{padding:24px 20px;border-radius:22px}.hero h1{font-size:32px}.sectionHead{margin-top:25px}.topActions .optional{display:none}.modal{padding:17px}.statGrid{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <button class="iconBtn" id="menuBtn" aria-label="منو" style="display:none"></button>
+  <a class="logo" href="#/home"><span class="logoMark"><svg viewBox="0 0 24 24" fill="none"><path d="M7 5.5v13M12 5.5v13M17 5.5v13M4 8h16M4 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>NEON</span></a>
+  <div class="search"><svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="searchInput" placeholder="جستجوی ویدئو، موضوع یا دسته‌بندی..."></div>
+  <div class="topActions"><button class="ghost optional" id="savedTop">ذخیره‌شده‌ها</button><button class="primary" id="addTop">+ افزودن ویدئو</button></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+ <div class="navTitle">ناوبری</div>
+ <button class="navBtn active" data-route="#/home">خانه</button>
+ <button class="navBtn" data-route="#/search">جستجو</button>
+ <button class="navBtn" data-route="#/saved">ذخیره‌شده‌ها</button>
+ <div class="navTitle">مدیریت</div>
+ <button class="navBtn" data-route="#/manager">مدیریت ویدئوها</button>
+ <button class="navBtn" data-route="#/data">مرکز داده</button>
+ <div class="navTitle">دسته‌بندی</div>
+ <button class="navBtn" data-cat="همه">همه ویدئوها</button>
+ <button class="navBtn" data-cat="آموزشی">آموزشی</button>
+ <button class="navBtn" data-cat="علمی">علمی</button>
+ <button class="navBtn" data-cat="فناوری">فناوری</button>
+ <button class="navBtn" data-cat="سرگرمی">سرگرمی</button>
+</aside>
+<main class="content" id="view"></main>
+</div>
+<nav class="mobileNav">
+ <button data-route="#/home" class="active">خانه</button>
+ <button data-route="#/search">جستجو</button>
+ <button data-route="#/saved">ذخیره‌ها</button>
+ <button data-route="#/manager">مدیریت</button>
+</nav>
+</div>
+
+<div class="modalBack" id="videoModal">
+<div class="modal">
+ <div class="modalHead"><h3 id="modalTitle">افزودن ویدئو از لینک</h3><button class="close" data-close>×</button></div>
+ <form id="videoForm">
+  <input type="hidden" id="editId">
+  <div class="formGrid">
+   <div class="field"><label>عنوان</label><input id="fTitle" required maxlength="140"></div>
+   <div class="field"><label>دسته‌بندی</label><select id="fCat"><option>آموزشی</option><option>علمی</option><option>فناوری</option><option>سرگرمی</option><option>گیم</option><option>موسیقی</option><option>اخبار</option><option>سایر</option></select></div>
+   <div class="field full"><label>لینک ویدئو (MP4/WebM یا منبع قابل پخش)</label><input id="fUrl" type="url" required placeholder="https://example.com/video.mp4"></div>
+   <div class="field full"><label>لینک تصویر Thumbnail</label><input id="fThumb" type="url" placeholder="https://example.com/image.jpg"></div>
+   <div class="field full"><label>کپشن</label><textarea id="fCaption" maxlength="300" placeholder="یک کپشن کوتاه برای ویدئو..."></textarea></div>
+   <div class="field full"><label>توضیحات</label><textarea id="fDesc" maxlength="1500"></textarea></div>
+  </div>
+  <div class="modalFoot"><button type="button" class="ghost" data-close>انصراف</button><button class="primary">ذخیره ویدئو</button></div>
+ </form>
+</div></div>
+
+<div class="modalBack" id="jsonModal">
+<div class="modal">
+ <div class="modalHead"><h3>مرکز داده</h3><button class="close" data-close>×</button></div>
+ <textarea id="jsonText" class="jsonBox"></textarea>
+ <div class="modalFoot"><button class="ghost" id="copyJson">کپی JSON</button><button class="ghost" id="importJsonText">اعمال JSON</button><button class="primary" id="downloadJson">خروجی JSON</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<input id="jsonFile" type="file" accept=".json,application/json" hidden>
+
+<script>
+const KEY='neon_videos_v1', SAVED='neon_saved_v1';
+const cats=['همه','آموزشی','علمی','فناوری','سرگرمی','گیم','موسیقی','اخبار','سایر'];
+let videos=load(KEY,[]), saved=load(SAVED,[]);
+let currentCat='همه';
+
+function load(k,f){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch{return f}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(videos));localStorage.setItem(SAVED,JSON.stringify(saved))}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function validUrl(u){try{const x=new URL(u);return ['http:','https:'].includes(x.protocol)}catch{return false}}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>e.classList.remove('show'),2600)}
+function thumb(v){return v.thumbnail&&validUrl(v.thumbnail)?v.thumbnail:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><rect width="100%" height="100%" fill="#11101a"/><circle cx="320" cy="180" r="54" fill="#9b5cff" opacity=".16"/><text x="50%" y="52%" text-anchor="middle" fill="#b991ff" font-family="Arial" font-size="25">NEON VIDEO</text></svg>`)}
+
+function openExternal(url){
+ if(!validUrl(url)){toast('لینک ویدئو معتبر نیست');return}
+ window.open(url,'_blank','noopener,noreferrer');
+}
+
+function card(v){
+ const isSaved=saved.includes(v.id);
+ return `<article class="card" data-id="${esc(v.id)}">
+ <div class="thumb"><img loading="lazy" src="${esc(thumb(v))}" onerror="this.src='${esc(thumb({}))}'"><span class="duration">${esc(v.duration||'--:--')}</span><button class="play" data-play="${esc(v.id)}" aria-label="پخش">▶</button></div>
+ <div class="cardBody"><div class="cardTitle">${esc(v.title)}</div><div class="caption">${esc(v.caption||'بدون کپشن')}</div><div class="meta"><span>${esc(v.category)}</span><span>${Number(v.views||0).toLocaleString('fa-IR')} بازدید</span></div>
+ <div style="display:flex;justify-content:flex-end;margin-top:9px"><button class="iconBtn saveBtn" data-save="${esc(v.id)}" title="ذخیره">${isSaved?'★':'☆'}</button></div></div></article>`
+}
+function filtered(q=''){
+ q=q.trim().toLowerCase();
+ return videos.filter(v=>{
+  const cat=currentCat==='همه'||v.category===currentCat;
+  const text=[v.title,v.caption,v.description,v.category].join(' ').toLowerCase();
+  return cat && (!q||text.includes(q));
+ })
+}
+function home(){
+ document.getElementById('view').innerHTML=`
+ <section class="hero"><div class="heroContent"><div class="eyebrow">NEON VIDEO PLATFORM</div><h1>دنیای ویدئو، با یک کلیک.</h1><p>یک فضای ویدئویی سریع و مینیمال برای نگهداری و تماشای ویدئوهایی که خودت با لینک اضافه می‌کنی؛ همه‌چیز محلی و قابل پشتیبان‌گیری با JSON.</p><button class="primary" id="heroAdd">افزودن اولین ویدئو</button></div></section>
+ <div class="sectionHead"><h2>دسته‌بندی‌ها</h2></div>
+ <div class="chips">${cats.map(c=>`<button class="chip ${currentCat===c?'active':''}" data-chip="${c}">${c}</button>`).join('')}</div>
+ <div class="sectionHead"><h2>${currentCat==='همه'?'آخرین ویدئوها':currentCat}</h2><span class="count">${filtered().length.toLocaleString('fa-IR')} ویدئو</span></div>
+ ${videos.length?`<div class="grid">${filtered().map(card).join('')}</div>`:`<div class="empty"><div class="emptyIcon">▶</div><h3>هنوز ویدئویی اضافه نشده</h3><p>یک لینک ویدئو وارد کن تا اولین محتوای NEON ساخته شود.</p><button class="primary" id="emptyAdd">افزودن ویدئو از لینک</button></div>`}`;
+ bindView();
+}
+function searchView(q=''){
+ const arr=filtered(q);
+ document.getElementById('view').innerHTML=`<div class="sectionHead"><h2>نتایج جستجو</h2><span class="count">${arr.length.toLocaleString('fa-IR')} نتیجه</span></div>${arr.length?`<div class="grid">${arr.map(card).join('')}</div>`:`<div class="empty"><div class="emptyIcon">⌕</div><h3>نتیجه‌ای پیدا نشد</h3><p>عنوان، کپشن یا دسته‌بندی دیگری را امتحان کن.</p></div>`}`;
+ bindView();
+}
+function savedView(){
+ const arr=videos.filter(v=>saved.includes(v.id));
+ document.getElementById('view').innerHTML=`<div class="sectionHead"><h2>ذخیره‌شده‌ها</h2><span class="count">${arr.length.toLocaleString('fa-IR')} ویدئو</span></div>${arr.length?`<div class="grid">${arr.map(card).join('')}</div>`:`<div class="empty"><div class="emptyIcon">☆</div><h3>لیست ذخیره‌شده خالی است</h3><p>روی نشان ستاره هر ویدئو بزن تا اینجا ذخیره شود.</p></div>`}`;
+ bindView();
+}
+function manager(){
+ document.getElementById('view').innerHTML=`<div class="sectionHead"><h2>مدیریت ویدئوها</h2><button class="primary" id="managerAdd">+ افزودن</button></div><div class="statGrid"><div class="stat"><strong>${videos.length.toLocaleString('fa-IR')}</strong><span>کل ویدئوها</span></div><div class="stat"><strong>${saved.length.toLocaleString('fa-IR')}</strong><span>ذخیره‌شده</span></div><div class="stat"><strong>${videos.reduce((a,v)=>a+Number(v.views||0),0).toLocaleString('fa-IR')}</strong><span>مجموع بازدید</span></div></div>${videos.length?`<div class="manageList">${videos.map(v=>`<div class="manageItem"><img src="${esc(thumb(v))}" onerror="this.style.opacity=.3"><div class="manageMain"><b>${esc(v.title)}</b><small>${esc(v.category)} · ${Number(v.views||0).toLocaleString('fa-IR')} بازدید</small></div><div class="actions"><button data-edit="${esc(v.id)}">ویرایش</button><button data-delete="${esc(v.id)}">حذف</button></div></div>`).join('')}</div>`:`<div class="empty"><h3>مدیریتی برای نمایش نیست</h3><p>اولین ویدئوی خودت را اضافه کن.</p></div>`}`;
+ document.getElementById('managerAdd')?.addEventListener('click',()=>openVideo());
+ document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openVideo(b.dataset.edit));
+ document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteVideo(b.dataset.delete));
+}
+function dataView(){
+ document.getElementById('view').innerHTML=`<div class="sectionHead"><h2>مرکز داده</h2></div><div class="empty" style="text-align:right"><h3>پشتیبان‌گیری کامل</h3><p>تمام ویدئوها و تنظیمات محلی را به صورت یک فایل JSON ذخیره یا در مرورگر دیگری بازیابی کن.</p><div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:15px"><button class="primary" id="exportBtn">خروجی JSON</button><button class="ghost" id="importBtn">وارد کردن JSON</button><button class="ghost" id="rawBtn">مشاهده JSON</button><button class="ghost" id="resetBtn" style="color:#ff829b">پاک‌سازی همه داده‌ها</button></div></div>`;
+ document.getElementById('exportBtn').onclick=exportJson; document.getElementById('importBtn').onclick=()=>document.getElementById('jsonFile').click();
+ document.getElementById('rawBtn').onclick=openJsonModal; document.getElementById('resetBtn').onclick=()=>{if(confirm('همه ویدئوها و ذخیره‌ها حذف شوند؟')){videos=[];saved=[];persist();toast('اطلاعات پاک شد');dataView()}};
+}
+function videoView(id){
+ const v=videos.find(x=>x.id===id); if(!v){location.hash='#/home';return}
+ v.views=Number(v.views||0)+1;persist();
+ document.getElementById('view').innerHTML=`<div class="videoPage"><section><div class="playerWrap" style="display:grid;place-items:center;min-height:340px;background:linear-gradient(135deg,#0b0a10,#11101a)"><a class="primary" href="${esc(v.videoUrl)}" target="_blank" rel="noopener noreferrer" style="padding:18px 30px;font-size:16px">▶ تماشای ویدئو در تب جدید</a></div><div class="videoInfo"><h1>${esc(v.title)}</h1><p>${esc(v.caption||'')}</p>${v.description?`<p style="margin-top:10px">${esc(v.description)}</p>`:''}</div></section><aside class="sideInfo"><h3>اطلاعات ویدئو</h3><div class="row">دسته‌بندی: ${esc(v.category)}</div><div class="row">بازدید: ${Number(v.views).toLocaleString('fa-IR')}</div><div class="row">تاریخ: ${esc(v.createdAt||'')}</div><button class="primary" style="width:100%;margin-top:14px" id="vidSave">${saved.includes(v.id)?'حذف از ذخیره‌ها':'ذخیره ویدئو'}</button></aside></div>`;
+ document.getElementById('vidSave').onclick=()=>toggleSave(id);
+}
+function bindView(){
+ document.getElementById('heroAdd')?.addEventListener('click',()=>openVideo());
+ document.getElementById('emptyAdd')?.addEventListener('click',()=>openVideo());
+ document.querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>{currentCat=b.dataset.chip;home()});
+ document.querySelectorAll('[data-play]').forEach(b=>b.onclick=e=>{
+  e.stopPropagation();
+  const v=videos.find(x=>x.id===b.dataset.play);
+  if(v) openExternal(v.videoUrl);
+ });
+ document.querySelectorAll('[data-save]').forEach(b=>b.onclick=e=>{e.stopPropagation();toggleSave(b.dataset.save)});
+ document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',e=>{
+  if(e.target.closest('[data-play],[data-save]'))return;
+  const v=videos.find(x=>x.id===c.dataset.id);
+  if(v) openExternal(v.videoUrl);
+ }));
+}
+function toggleSave(id){saved.includes(id)?saved=saved.filter(x=>x!==id):saved.push(id);persist();toast(saved.includes(id)?'ویدئو ذخیره شد':'از ذخیره‌ها حذف شد');route()}
+function openVideo(id=null){
+ const v=id?videos.find(x=>x.id===id):null;
+ document.getElementById('modalTitle').textContent=v?'ویرایش ویدئو':'افزودن ویدئو از لینک';
+ document.getElementById('editId').value=v?.id||'';
+ document.getElementById('fTitle').value=v?.title||'';
+ document.getElementById('fCat').value=v?.category||'آموزشی';
+ document.getElementById('fUrl').value=v?.videoUrl||'';
+ document.getElementById('fThumb').value=v?.thumbnail||'';
+ document.getElementById('fCaption').value=v?.caption||'';
+ document.getElementById('fDesc').value=v?.description||'';
+ document.getElementById('videoModal').classList.add('open');
+}
+function closeModals(){document.querySelectorAll('.modalBack').forEach(x=>x.classList.remove('open'))}
+document.querySelectorAll('[data-close]').forEach(x=>x.onclick=closeModals);
+document.getElementById('videoForm').onsubmit=e=>{
+ e.preventDefault();
+ const id=document.getElementById('editId').value||crypto.randomUUID();
+ const url=document.getElementById('fUrl').value.trim(), t=document.getElementById('fThumb').value.trim();
+ if(!validUrl(url)||(t&&!validUrl(t))){toast('لطفاً لینک‌های معتبر http/https وارد کن');return}
+ const old=videos.find(v=>v.id===id);
+ const obj={id,title:document.getElementById('fTitle').value.trim(),category:document.getElementById('fCat').value,videoUrl:url,thumbnail:t,caption:document.getElementById('fCaption').value.trim(),description:document.getElementById('fDesc').value.trim(),duration:old?.duration||'--:--',views:old?.views||0,createdAt:old?.createdAt||new Date().toLocaleDateString('fa-IR')};
+ if(!obj.title){toast('عنوان را وارد کن');return}
+ if(old) videos=videos.map(v=>v.id===id?obj:v); else videos.unshift(obj);
+ persist();closeModals();toast(old?'ویدئو ویرایش شد':'ویدئو اضافه شد');route();
+}
+function deleteVideo(id){if(confirm('این ویدئو حذف شود؟')){videos=videos.filter(v=>v.id!==id);saved=saved.filter(x=>x!==id);persist();toast('ویدئو حذف شد');manager()}}
+function exportData(){return {version:1,videos,saved,settings:{theme:'neon-purple-dark'}}}
+function exportJson(){
+ const blob=new Blob([JSON.stringify(exportData(),null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='neon-backup.json';a.click();URL.revokeObjectURL(a.href);toast('فایل JSON آماده شد')
+}
+function openJsonModal(){document.getElementById('jsonText').value=JSON.stringify(exportData(),null,2);document.getElementById('jsonModal').classList.add('open')}
+function applyJson(raw){
+ try{
+  const d=JSON.parse(raw);
+  if(!d||!Array.isArray(d.videos))throw 0;
+  if(d.videos.some(v=>!v.id||!v.title||!v.videoUrl))throw 0;
+  videos=d.videos; saved=Array.isArray(d.saved)?d.saved.filter(id=>videos.some(v=>v.id===id)):[];persist();closeModals();toast('JSON با موفقیت وارد شد');route()
+ }catch{toast('فایل JSON معتبر نیست')}
+}
+document.getElementById('copyJson').onclick=async()=>{await navigator.clipboard.writeText(document.getElementById('jsonText').value);toast('JSON کپی شد')};
+document.getElementById('importJsonText').onclick=()=>applyJson(document.getElementById('jsonText').value);
+document.getElementById('downloadJson').onclick=exportJson;
+document.getElementById('jsonFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>applyJson(r.result);r.readAsText(f);e.target.value=''};
+document.getElementById('addTop').onclick=()=>openVideo();
+document.getElementById('savedTop').onclick=()=>location.hash='#/saved';
+document.getElementById('searchInput').oninput=e=>{const q=e.target.value; if(q&&!location.hash.startsWith('#/search'))location.hash='#/search'; if(location.hash.startsWith('#/search'))searchView(q);else route()};
+document.querySelectorAll('[data-route]').forEach(b=>b.onclick=()=>location.hash=b.dataset.route);
+document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{currentCat=b.dataset.cat;location.hash='#/home';home()});
+function route(){
+ const p=location.hash.slice(2)||'home';
+ document.querySelectorAll('.navBtn,.mobileNav button').forEach(b=>b.classList.toggle('active',b.dataset.route===location.hash));
+ if(p==='home'){currentCat=currentCat||'همه';home()}
+ else if(p==='search'){searchView(document.getElementById('searchInput').value)}
+ else if(p==='saved')savedView();
+ else if(p==='manager')manager();
+ else if(p==='data')dataView();
+ else if(p.startsWith('video/'))videoView(decodeURIComponent(p.slice(6)));
+}
+window.addEventListener('hashchange',route);
+route();
+</script>
+</body>
+</html>
